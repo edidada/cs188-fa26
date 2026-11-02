@@ -1,0 +1,37 @@
+{
+  "publication_kind": "official-archive-import",
+  "imported_at": "2026-11-02",
+  "evidence": "https://inst.eecs.berkeley.edu/~cs188/fa26/projects/",
+  "archives": [
+    {
+      "directory": "proj0",
+      "url": "https://inst.eecs.berkeley.edu/~cs188/fa26/assets/projects/tutorial.zip",
+      "sha256": "4189fbe932fc4a25028ba5c7a9b0a405a1e3fe211b57522be2d8ff165f972cd5",
+      "bytes": 46713
+    },
+    {
+      "directory": "proj1",
+      "url": "https://inst.eecs.berkeley.edu/~cs188/fa26/assets/projects/search.zip",
+      "sha256": "d212f664b97ee38548dd868dfc5ce187f1a2147cfb90b0469e4fffe6e0a160c3",
+      "bytes": 131605
+    },
+    {
+      "directory": "proj2",
+      "url": "https://inst.eecs.berkeley.edu/~cs188/fa26/assets/projects/multiagent.zip",
+      "sha256": "cc762e929d867acb92302c00610c91f9c7560a7406758e517df9964e2d1c0f15",
+      "bytes": 155141
+    },
+    {
+      "directory": "proj3",
+      "url": "https://inst.eecs.berkeley.edu/~cs188/fa26/assets/projects/reinforcement.zip",
+      "sha256": "93180c14ee1fa6f95cb7539e53d566229ee807eec690b562daa17ec83e98ad44",
+      "bytes": 161292
+    },
+    {
+      "directory": "proj4",
+      "url": "https://inst.eecs.berkeley.edu/~cs188/fa26/assets/projects/tracking.zip",
+      "sha256": "513f923a4bbbffc46dfe7f0750527f165ea48fa05f461a9cd877f144acf2497d",
+      "bytes": 2124309
+    }
+  ]
+}
