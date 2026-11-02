@@ -499,9 +499,6 @@ class ExactInference(InferenceModule):
 
     def observeUpdate(self, observation: int, gameState: busters.GameState):
         jail = self.getJailPosition()
-        if observation is None:
-            self.beliefs = DiscreteDistribution({jail: 1.0})
-            return
         position = gameState.getPacmanPosition()
         for ghost in self.allPositions:
             self.beliefs[ghost] *= self.getObservationProb(observation, position, ghost, jail)
@@ -557,9 +554,6 @@ class ParticleFilter(InferenceModule):
 
     def observeUpdate(self, observation: int, gameState: busters.GameState):
         jail = self.getJailPosition()
-        if observation is None:
-            self.particles = [jail] * self.numParticles
-            return
         position = gameState.getPacmanPosition()
         weights = DiscreteDistribution()
         for particle in self.particles:
