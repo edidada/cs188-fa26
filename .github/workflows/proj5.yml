@@ -1,0 +1,40 @@
+name: CS188 Fall 2026 Project 5
+on:
+  push:
+    branches: [edidada/proj5]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  grade:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+      - run: pip install numpy==1.26.4 matplotlib==3.10.8
+      - name: Original public autograder
+        run: |
+          set -o pipefail
+          cd proj5
+          python autograder.py --no-graphics | tee ../proj5-grade.txt
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          score=re.findall(r'Total:\s*(\d+)\s*/\s*(\d+)',Path('../proj5-grade.txt').read_text())
+          assert score and int(score[-1][0]) > 0 and int(score[-1][0])>=int(score[-1][1]),score
+          questions=re.findall(r'Question q\d+:\s*(\d+)\s*/\s*(\d+)',Path('../proj5-grade.txt').read_text())
+          assert questions and all(int(a)>=int(b) for a,b in questions),questions
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cs188-proj5-grade
+          path: proj5-grade.txt

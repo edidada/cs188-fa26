@@ -32,6 +32,12 @@
       "url": "https://inst.eecs.berkeley.edu/~cs188/fa26/assets/projects/tracking.zip",
       "sha256": "513f923a4bbbffc46dfe7f0750527f165ea48fa05f461a9cd877f144acf2497d",
       "bytes": 2124309
+    },
+    {
+      "directory": "proj5",
+      "url": "https://inst.eecs.berkeley.edu/~cs188/fa26/assets/projects/machinelearning.zip",
+      "sha256": "49da679a3f4f290003b5bd77bd5f17f9383d4a888877e1fd5b48a360fed5649c",
+      "bytes": 18500888
     }
   ]
 }
