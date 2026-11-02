@@ -1,0 +1,9 @@
+# CS188 Fall 2026 Project 4 Bayes Nets and HMMs
+
+分支edidada/proj4，依据官方tracking.zip填充inference.py、factorOperations.py和bustersAgents.py。构造Pacman与两只Ghost到两路带噪距离观测的有向图；位置域覆盖给定网格，距离域覆盖最大曼哈顿距离加噪声上界。
+
+Factor join逐赋值相乘，统一未条件/已条件变量集合并检查未条件变量重复；eliminate按待消去变量域求和。Variable Elimination依官方调用跟踪接口交替join与eliminate，只有单一未条件变量的因子按题意丢弃，最终归一化。
+
+离散分布支持归一化与按质量采样，零质量不可采样。ExactInference以观测似然更新后验，以转移分布执行前向预测；被抓观测None把信念集中在jail。ParticleFilter均匀轮流初始化、按粒子出现次数累计权重、重采样，全部权重为0时重置均匀先验；None把全部粒子送jail，时间推进逐粒子采样转移。GreedyBusters以每个未抓Ghost的最大后验位置为目标，按真实迷宫距离选择最近目标及移动。
+
+独立proj4.yml在Python3.11运行原无图形autograder，保留原测试与评分器、逐题要求满分并保存日志。本地未运行实验，未提交课程平台；完整得分以最终Actions为准。
