@@ -73,31 +73,38 @@ def tinyMazeSearch(problem):
     return  [s, s, w, s, w, w, s, w]
 
 def depthFirstSearch(problem: SearchProblem):
-    """
-    Search the deepest nodes in the search tree first.
-
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.Stack()
+    frontier.push((problem.getStartState(), []))
+    visited = set()
+    while not frontier.isEmpty():
+        state, path = frontier.pop()
+        if state in visited:
+            continue
+        visited.add(state)
+        if problem.isGoalState(state):
+            return path
+        for child, action, _ in problem.getSuccessors(state):
+            if child not in visited:
+                frontier.push((child, path + [action]))
+    return []
 
 def breadthFirstSearch(problem: SearchProblem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.Queue()
+    start = problem.getStartState()
+    frontier.push((start, []))
+    visited = {start}
+    while not frontier.isEmpty():
+        state, path = frontier.pop()
+        if problem.isGoalState(state):
+            return path
+        for child, action, _ in problem.getSuccessors(state):
+            if child not in visited:
+                visited.add(child)
+                frontier.push((child, path + [action]))
+    return []
 
 def uniformCostSearch(problem: SearchProblem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return aStarSearch(problem, nullHeuristic)
 
 def nullHeuristic(state, problem=None):
     """
@@ -107,9 +114,24 @@ def nullHeuristic(state, problem=None):
     return 0
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    start = problem.getStartState()
+    best = {start: 0}
+    frontier = util.PriorityQueue()
+    frontier.push((start, [], 0), heuristic(start, problem))
+    while not frontier.isEmpty():
+        state, path, cost = frontier.pop()
+        if cost != best[state]:
+            continue
+        if problem.isGoalState(state):
+            return path
+        for child, action, step in problem.getSuccessors(state):
+            if step < 0:
+                raise ValueError('Search requires nonnegative step costs')
+            candidate = cost + step
+            if candidate < best.get(child, float('inf')):
+                best[child] = candidate
+                frontier.push((child, path + [action], candidate), candidate + heuristic(child, problem))
+    return []
 
 
 # Abbreviations

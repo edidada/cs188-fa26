@@ -1,0 +1,31 @@
+name: CS188 Fall 2026 Project 1
+on:
+  push:
+    branches: [edidada/proj1]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  grade:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Original public autograder
+        run: |
+          set -o pipefail
+          cd proj1
+          python autograder.py --no-graphics | tee ../proj1-grade.txt
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          score=re.findall(r'Total:\s*(\d+)\s*/\s*(\d+)',Path('../proj1-grade.txt').read_text())
+          assert score and int(score[-1][0]) > 0 and score[-1][0]==score[-1][1],score
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cs188-proj1-grade
+          path: proj1-grade.txt
