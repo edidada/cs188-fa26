@@ -53,29 +53,8 @@ class ReflexAgent(Agent):
         return legalMoves[chosenIndex]
 
     def evaluationFunction(self, currentGameState: GameState, action):
-        """
-        Design a better evaluation function here.
-
-        The evaluation function takes in the current and proposed successor
-        GameStates (pacman.py) and returns a number, where higher numbers are better.
-
-        The code below extracts some useful information from the state, like the
-        remaining food (newFood) and Pacman position after moving (newPos).
-        newScaredTimes holds the number of moves that each ghost will remain
-        scared because of Pacman having eaten a power pellet.
-
-        Print out these variables to see what you're getting, then combine them
-        to create a masterful evaluation function.
-        """
-        # Useful information you can extract from a GameState (pacman.py)
-        successorGameState = currentGameState.generatePacmanSuccessor(action)
-        newPos = successorGameState.getPacmanPosition()
-        newFood = successorGameState.getFood()
-        newGhostStates = successorGameState.getGhostStates()
-        newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
-
-        "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        successor = currentGameState.generatePacmanSuccessor(action)
+        return betterEvaluationFunction(successor) - (2 if action == Directions.STOP else 0)
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """
@@ -113,30 +92,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
     """
 
     def getAction(self, gameState: GameState):
-        """
-        Returns the minimax action from the current gameState using self.depth
-        and self.evaluationFunction.
-
-        Here are some method calls that might be useful when implementing minimax.
-
-        gameState.getLegalActions(agentIndex):
-        Returns a list of legal actions for an agent
-        agentIndex=0 means Pacman, ghosts are >= 1
-
-        gameState.generateSuccessor(agentIndex, action):
-        Returns the successor game state after an agent takes an action
-
-        gameState.getNumAgents():
-        Returns the total number of agents in the game
-
-        gameState.isWin():
-        Returns whether or not the game state is a winning state
-
-        gameState.isLose():
-        Returns whether or not the game state is a losing state
-        """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return _tree_action(self, gameState, 'minimax')
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
@@ -144,11 +100,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     """
 
     def getAction(self, gameState: GameState):
-        """
-        Returns the minimax action using self.depth and self.evaluationFunction
-        """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return _tree_action(self, gameState, 'alphabeta')
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
@@ -156,24 +108,65 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
     """
 
     def getAction(self, gameState: GameState):
-        """
-        Returns the expectimax action using self.depth and self.evaluationFunction
-
-        All ghosts should be modeled as choosing uniformly at random from their
-        legal moves.
-        """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return _tree_action(self, gameState, 'expectimax')
 
 def betterEvaluationFunction(currentGameState: GameState):
-    """
-    Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
-    evaluation function (question 5).
-
-    DESCRIPTION: <write something here so we know what you did>
-    """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    if currentGameState.isWin():
+        return currentGameState.getScore() + 100000
+    if currentGameState.isLose():
+        return currentGameState.getScore() - 100000
+    position = currentGameState.getPacmanPosition()
+    food = currentGameState.getFood().asList()
+    value = currentGameState.getScore() - 4 * len(food) - 12 * len(currentGameState.getCapsules())
+    if food:
+        value += 12.0 / (1 + min(manhattanDistance(position, dot) for dot in food))
+    for ghost in currentGameState.getGhostStates():
+        distance = manhattanDistance(position, ghost.getPosition())
+        if ghost.scaredTimer > distance:
+            value += 200.0 / (distance + 1)
+        elif not ghost.scaredTimer:
+            if distance <= 1:
+                value -= 1000
+            else:
+                value -= 5.0 / distance
+    return value
 
 # Abbreviation
 better = betterEvaluationFunction
+
+
+def _tree_action(agent, initial, mode):
+    """Search complete Pacman/ghost rounds with the original successor order."""
+    def visit(state, index, rounds, alpha, beta):
+        if rounds == agent.depth or state.isWin() or state.isLose():
+            return agent.evaluationFunction(state), None
+        actions = state.getLegalActions(index)
+        if not actions:
+            return agent.evaluationFunction(state), None
+        next_index = (index + 1) % state.getNumAgents()
+        next_rounds = rounds + (next_index == 0)
+        choice = actions[0]
+        value = -float('inf') if index == 0 else float('inf')
+        if index != 0 and mode == 'expectimax':
+            value = sum(visit(state.generateSuccessor(index, action), next_index, next_rounds, alpha, beta)[0]
+                        for action in actions) / len(actions)
+            return value, choice
+        for action in actions:
+            child = state.generateSuccessor(index, action)
+            candidate = visit(child, next_index, next_rounds, alpha, beta)[0]
+            if index == 0:
+                if candidate > value:
+                    value, choice = candidate, action
+                if mode == 'alphabeta':
+                    if value > beta:
+                        return value, choice
+                    alpha = max(alpha, value)
+            else:
+                if candidate < value:
+                    value, choice = candidate, action
+                if mode == 'alphabeta':
+                    if value < alpha:
+                        return value, choice
+                    beta = min(beta, value)
+        return value, choice
+    return visit(initial, 0, 0, -float('inf'), float('inf'))[1] or Directions.STOP
