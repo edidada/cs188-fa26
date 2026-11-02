@@ -14,7 +14,7 @@
 
 import util
 from util import raiseNotDefined
-from game import Agent
+from game import Agent, Actions
 from game import Directions
 from keyboardAgents import KeyboardAgent
 import inference
