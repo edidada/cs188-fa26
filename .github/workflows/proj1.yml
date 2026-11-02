@@ -22,7 +22,9 @@ jobs:
           import re
           from pathlib import Path
           score=re.findall(r'Total:\s*(\d+)\s*/\s*(\d+)',Path('../proj1-grade.txt').read_text())
-          assert score and int(score[-1][0]) > 0 and score[-1][0]==score[-1][1],score
+          assert score and int(score[-1][0]) > 0 and int(score[-1][0])>=int(score[-1][1]),score
+          questions=re.findall(r'Question q\d+:\s*(\d+)\s*/\s*(\d+)',Path('../proj1-grade.txt').read_text())
+          assert questions and all(int(a)>=int(b) for a,b in questions),questions
           PY
       - uses: actions/upload-artifact@v4
         if: always()
