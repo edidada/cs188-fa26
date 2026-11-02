@@ -6,3 +6,5 @@ __pycache__/
 .venv/
 **/target/
 .csdiy-import-state.json
+
+/proj0-grade.txt
