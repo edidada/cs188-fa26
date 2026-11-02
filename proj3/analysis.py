@@ -20,49 +20,30 @@
 # value iteration.
 
 def question2():
-    answerDiscount = 0.9
-    answerNoise = 0.2
-    return answerDiscount, answerNoise
+    return 0.9, 0.0
 
 def question3a():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
-    return answerDiscount, answerNoise, answerLivingReward
+    return 0.2, 0.0, -1.0
     # If not possible, return 'NOT POSSIBLE'
 
 def question3b():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
-    return answerDiscount, answerNoise, answerLivingReward
+    return 0.2, 0.2, -1.0
     # If not possible, return 'NOT POSSIBLE'
 
 def question3c():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
-    return answerDiscount, answerNoise, answerLivingReward
+    return 0.9, 0.0, -0.1
     # If not possible, return 'NOT POSSIBLE'
 
 def question3d():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
-    return answerDiscount, answerNoise, answerLivingReward
+    return 0.9, 0.2, -0.1
     # If not possible, return 'NOT POSSIBLE'
 
 def question3e():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
-    return answerDiscount, answerNoise, answerLivingReward
+    return 0.9, 0.0, 2.0
     # If not possible, return 'NOT POSSIBLE'
 
 def question7():
-    answerEpsilon = None
-    answerLearningRate = None
-    return answerEpsilon, answerLearningRate
+    return 'NOT POSSIBLE'
     # If not possible, return 'NOT POSSIBLE'
 
 if __name__ == '__main__':
